@@ -8,6 +8,8 @@
 DHT dht(DHTPIN, DHTTYPE);
 float humidity;
 float temperature;
+unsigned long lastDHTReadTime = millis();
+constexpr long DHTReadInterval = 2000;
 
 // WiFi
 #ifndef WIFI_SSID
@@ -30,6 +32,24 @@ void initWiFi() {
     Serial.println(WiFi.localIP());
 }
 
+void readDHT() {
+    if (millis() - lastDHTReadTime >= DHTReadInterval) {
+        humidity = dht.readHumidity();
+        temperature = dht.readTemperature(); // Celsius
+        lastDHTReadTime = millis();
+
+        if (isnan(humidity) || isnan(temperature)) {
+            Serial.println("Failed to read from DHT sensor!");
+        }
+
+        Serial.print(humidity);
+        Serial.print(" ");
+        Serial.print(temperature);
+        Serial.println("");
+    }
+
+}
+
 void setup() {
     Serial.begin(115200);
 
@@ -38,18 +58,5 @@ void setup() {
 }
 
 void loop() {
-    delay(2000);
-
-    humidity = dht.readHumidity();
-    temperature = dht.readTemperature(); // Celsius
-
-    if (isnan(humidity) || isnan(temperature)) {
-        Serial.println("Failed to read from DHT sensor!");
-        return;
-    }
-
-    Serial.print(humidity);
-    Serial.print(" ");
-    Serial.print(temperature);
-    Serial.println("");
+    readDHT();
 }
