@@ -101,8 +101,8 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
                 digitalWrite(HEATER, LOW);
             }
         } else if (strcmp((char *) data, "toggle peltier fan") == 0) {
-            Serial.println("Toggling heater on/off...");
-            ws.textAll(">>> toggling heater");
+            Serial.println("Toggling peltier fan on/off...");
+            ws.textAll(">>> toggling peltier fan");
             if (digitalRead(PELTIER_FAN) == LOW) {
                 digitalWrite(PELTIER_FAN, HIGH);
             } else {
